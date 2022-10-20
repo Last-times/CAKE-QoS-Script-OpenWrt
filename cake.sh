@@ -922,11 +922,11 @@ chain dscp_marking_ports_ipv4 {
     # ICMP (aka ping)
     meta l4proto icmp counter ip dscp set $DSCP_ICMP comment "ICMP (aka ping) to $DSCP_ICMP_COMMENT"
 
-    # SSH, NTP and DNS
-    meta nfproto ipv4 tcp sport { 22, 53, 5353 } counter ip dscp set cs2 comment "SSH and DNS to CS2 (TCP)"
-    meta nfproto ipv4 tcp dport { 22, 53, 5353 } counter ip dscp set cs2 comment "SSH and DNS to CS2 (TCP)"
-    meta nfproto ipv4 udp sport { 123, 53, 5353 } counter ip dscp set cs2 comment "NTP and DNS to CS2 (UDP)"
-    meta nfproto ipv4 udp dport { 123, 53, 5353 } counter ip dscp set cs2 comment "NTP and DNS to CS2 (UDP)"
+    # NTP/FTP/SSH/SCP/SNMP/TELNET/SMTP/POP3/IMAP4/DNS/DHCP/IRC/TFTP
+    meta nfproto ipv4 tcp sport { 123, 20-25, 110, 143, 465, 587, 989, 990, 993, 995, 53, 5353, 6665, 6669 } counter ip dscp set cs2 comment "NTP/FTP/SSH/SCP/TELNET/SMTP/POP3/IMAP4/DNS/IRC to CS2 (TCP)"
+    meta nfproto ipv4 tcp dport { 123, 20-25, 110, 143, 465, 587, 989, 990, 993, 995, 53, 5353, 6665, 6669 } counter ip dscp set cs2 comment "NTP/FTP/SSH/SCP/TELNET/SMTP/POP3/IMAP4/DNS/IRC to CS2 (TCP)"
+    meta nfproto ipv4 udp sport { 123, 21-22, 110, 143, 161-162, 989, 990, 995, 53, 5353, 67-69 } counter ip dscp set cs2 comment "NTP/FTP/SSH/SCP/SNMP/POP3/DNS/DHCP/TFTP to CS2 (UDP)"
+    meta nfproto ipv4 udp dport { 123, 21-22, 110, 143, 161-162, 989, 990, 995, 53, 5353, 67-69 } counter ip dscp set cs2 comment "NTP/FTP/SSH/SCP/SNMP/POP3/DNS/DHCP/TFTP to CS2 (UDP)"
 
     # DNS over TLS (DoT)
     meta nfproto ipv4 tcp sport 853 counter ip dscp set af41 comment "DNS over TLS to AF41 (TCP)"
@@ -940,15 +940,15 @@ chain dscp_marking_ports_ipv4 {
     meta nfproto ipv4 meta l4proto { tcp, udp } th dport { 80, 443 } meta length 77-1256 limit rate 200/second counter ip dscp set af41 comment "Prioritize egress light browsing (text/live chat/code?) and VoIP (these are the fallback ports) to AF41 (TCP and UDP)"
     meta nfproto ipv4 meta l4proto { tcp, udp } th dport { 80, 443 } meta length 77-1256 limit rate over 200/second counter ip dscp set cs0 comment "Deprioritize egress traffic of packet lengths between 77 and 1256 bytes that have more than 200 pps to CS0 (TCP and UDP)"
 
-    # Live Streaming ports for YouTube Live, Twitch, Vimeo and LinkedIn Live
+    # Live Streaming ports for YouTube Live, Twitch, Vimeo, and LinkedIn Live
     meta nfproto ipv4 tcp sport { 1935-1936, 2396, 2935 } counter ip dscp set cs3 comment "Live Streaming ports to CS3 (TCP)"
     meta nfproto ipv4 tcp dport { 1935-1936, 2396, 2935 } counter ip dscp set cs3 comment "Live Streaming ports to CS3 (TCP)"
-
-    # Xbox, PlayStation, Call of Duty, FIFA, Minecraft and Supercell Games
-    meta nfproto ipv4 tcp sport { 3074, 3478-3480, 3075-3076, 3659, 25565, 9339 } counter ip dscp set $DSCP_GAMING comment "Known game ports and game consoles ports to $DSCP_GAMING_COMMENT (TCP)"
-    meta nfproto ipv4 tcp dport { 3074, 3478-3480, 3075-3076, 3659, 25565, 9339 } counter ip dscp set $DSCP_GAMING comment "Known game ports and game consoles ports to $DSCP_GAMING_COMMENT (TCP)"
-    meta nfproto ipv4 udp sport { 88, 3074, 3544, 3075-3079, 3658-3659, 19132-19133, 25565, 9339 } counter ip dscp set $DSCP_GAMING comment "Known game ports and game consoles ports to $DSCP_GAMING_COMMENT (UDP)"
-    meta nfproto ipv4 udp dport { 88, 3074, 3544, 3075-3079, 3658-3659, 19132-19133, 25565, 9339 } counter ip dscp set $DSCP_GAMING comment "Known game ports and game consoles ports to $DSCP_GAMING_COMMENT (UDP)"
+   
+    # Steam, Xbox, PlayStation, Call of Duty, FIFA, Minecraft, World of Warcraft, and Supercell Games
+    meta nfproto ipv4 tcp sport { 3074, 3478-3480, 3075-3076, 3659, 3724, 25565, 9339 } counter ip dscp set $DSCP_GAMING comment "Known game ports and game consoles ports to $DSCP_GAMING_COMMENT (TCP)"
+    meta nfproto ipv4 tcp dport { 3074, 3478-3480, 3075-3076, 3659, 3724, 25565, 9339 } counter ip dscp set $DSCP_GAMING comment "Known game ports and game consoles ports to $DSCP_GAMING_COMMENT (TCP)"
+    meta nfproto ipv4 udp sport { 88, 1725, 3074, 3544, 3075-3079, 3724, 3658-3659, 19132-19133, 25565, 9339 } counter ip dscp set $DSCP_GAMING comment "Known game ports and game consoles ports to $DSCP_GAMING_COMMENT (UDP)"
+    meta nfproto ipv4 udp dport { 88, 1725, 3074, 3544, 3075-3079, 3724, 3658-3659, 19132-19133, 25565, 9339 } counter ip dscp set $DSCP_GAMING comment "Known game ports and game consoles ports to $DSCP_GAMING_COMMENT (UDP)"
 
     # NVIDIA GeForce NOW
     meta nfproto ipv4 tcp sport 49006 counter ip dscp set af42 comment "Known game streaming ports to AF42 (TCP)"
@@ -956,11 +956,11 @@ chain dscp_marking_ports_ipv4 {
     meta nfproto ipv4 udp sport { 49003-49006 } counter ip dscp set af42 comment "Known game streaming ports to AF42 (UDP)"
     meta nfproto ipv4 udp dport { 49003-49006 } counter ip dscp set af42 comment "Known game streaming ports to AF42 (UDP)"
 
-    # Zoom, Microsoft Teams, Skype, FaceTime, GoToMeeting, Webex Meeting, Jitsi Meet, Google Meet and TeamViewer
-    meta nfproto ipv4 tcp sport { 8801-8802, 5004, 5349, 5938 } counter ip dscp set af41 comment "Known video conferencing ports to AF41 (TCP)"
-    meta nfproto ipv4 tcp dport { 8801-8802, 5004, 5349, 5938 } counter ip dscp set af41 comment "Known video conferencing ports to AF41 (TCP)"
-    meta nfproto ipv4 udp sport { 3478-3497, 8801-8810, 16384-16387, 16393-16402, 1853, 8200, 9000, 10000, 19302-19309, 5938 } counter ip dscp set af41 comment "Known video conferencing ports to AF41 (UDP)"
-    meta nfproto ipv4 udp dport { 3478-3497, 8801-8810, 16384-16387, 16393-16402, 1853, 8200, 9000, 10000, 19302-19309, 5938 } counter ip dscp set af41 comment "Known video conferencing ports to AF41 (UDP)"
+    # Zoom, Microsoft Teams, Skype, FaceTime, GoToMeeting, Webex Meeting, Jitsi Meet, Google Meet, RING Live View & APP, and TeamViewer
+    meta nfproto ipv4 tcp sport { 8801-8802, 5004, 5349, 5938, 7076-7077, 9078-9079, 15063-15064 } counter ip dscp set af41 comment "Known video conferencing ports to AF41 (TCP)"
+    meta nfproto ipv4 tcp dport { 8801-8802, 5004, 5349, 5938, 7076-7077, 9078-9079, 15063-15064 } counter ip dscp set af41 comment "Known video conferencing ports to AF41 (TCP)"
+    meta nfproto ipv4 udp sport { 3478-3497, 8801-8810, 7076-7077, 9078-9079, 15063-15064, 16384-16387, 16393-16402, 1853, 8200, 9000, 10000, 19302-19309, 5938 } counter ip dscp set af41 comment "Known video conferencing ports to AF41 (UDP)"
+    meta nfproto ipv4 udp dport { 3478-3497, 8801-8810, 7076-7077, 9078-9079, 15063-15064, 16384-16387, 16393-16402, 1853, 8200, 9000, 10000, 19302-19309, 5938 } counter ip dscp set af41 comment "Known video conferencing ports to AF41 (UDP)"
 
     # Voice over Internet Protocol (VoIP) and Voice over WiFi or WiFi Calling (VoWiFi)
     meta nfproto ipv4 tcp sport { 5060-5061 } counter ip dscp set ef comment "Known VoIP and VoWiFi ports to EF (TCP)"
@@ -1020,11 +1020,11 @@ chain dscp_marking_ports_ipv6 {
     # ICMPv6 (aka ping)
     meta l4proto ipv6-icmp counter ip6 dscp set $DSCP_ICMP comment "ICMPv6 (aka ping) to $DSCP_ICMP_COMMENT"
 
-    # SSH, NTP and DNS
-    meta nfproto ipv6 tcp sport { 22, 53, 5353 } counter ip6 dscp set cs2 comment "SSH and DNS to CS2 (TCP)"
-    meta nfproto ipv6 tcp dport { 22, 53, 5353 } counter ip6 dscp set cs2 comment "SSH and DNS to CS2 (TCP)"
-    meta nfproto ipv6 udp sport { 123, 53, 5353 } counter ip6 dscp set cs2 comment "NTP and DNS to CS2 (UDP)"
-    meta nfproto ipv6 udp dport { 123, 53, 5353 } counter ip6 dscp set cs2 comment "NTP and DNS to CS2 (UDP)"
+    # NTP/FTP/SSH/SCP/SNMP/TELNET/SMTP/POP3/IMAP4/DNS/DHCP/IRC/TFTP
+    meta nfproto ipv6 tcp sport { 123, 20-25, 110, 143, 465, 587, 989, 990, 993, 995, 53, 5353, 6665, 6669 } counter ip6 dscp set cs2 comment "NTP/FTP/SSH/SCP/TELNET/SMTP/POP3/IMAP4/DNS/IRC to CS2 (TCP)"
+    meta nfproto ipv6 tcp dport { 123, 20-25, 110, 143, 465, 587, 989, 990, 993, 995, 53, 5353, 6665, 6669 } counter ip6 dscp set cs2 comment "NTP/FTP/SSH/SCP/TELNET/SMTP/POP3/IMAP4/DNS/IRC to CS2 (TCP)"
+    meta nfproto ipv6 udp sport { 123, 21-22, 110, 143, 161-162, 989, 990, 995, 53, 5353, 546-547 } counter ip6 dscp set cs2 comment "NTP/FTP/SSH/SCP/SNMP/POP3/DNS/DHCP/TFTP to CS2 (UDP)"
+    meta nfproto ipv6 udp dport { 123, 21-22, 110, 143, 161-162, 989, 990, 995, 53, 5353, 546-547 } counter ip6 dscp set cs2 comment "NTP/FTP/SSH/SCP/SNMP/POP3/DNS/DHCP/TFTP to CS2 (UDP)"
 
     # DNS over TLS (DoT)
     meta nfproto ipv6 tcp sport 853 counter ip6 dscp set af41 comment "DNS over TLS to AF41 (TCP)"
@@ -1038,15 +1038,15 @@ chain dscp_marking_ports_ipv6 {
     meta nfproto ipv6 meta l4proto { tcp, udp } th dport { 80, 443 } meta length 77-1256 limit rate 200/second counter ip6 dscp set af41 comment "Prioritize egress light browsing (text/live chat/code?) and VoIP (these are the fallback ports) to AF41 (TCP and UDP)"
     meta nfproto ipv6 meta l4proto { tcp, udp } th dport { 80, 443 } meta length 77-1256 limit rate over 200/second counter ip6 dscp set cs0 comment "Deprioritize egress traffic of packet lengths between 77 and 1256 bytes that have more than 200 pps to CS0 (TCP and UDP)"
 
-    # Live Streaming ports for YouTube Live, Twitch, Vimeo and LinkedIn Live
+    # Live Streaming ports for YouTube Live, Twitch, Vimeo, and LinkedIn Live
     meta nfproto ipv6 tcp sport { 1935-1936, 2396, 2935 } counter ip6 dscp set cs3 comment "Live Streaming ports to CS3 (TCP)"
     meta nfproto ipv6 tcp dport { 1935-1936, 2396, 2935 } counter ip6 dscp set cs3 comment "Live Streaming ports to CS3 (TCP)"
 
-    # Xbox, PlayStation, Call of Duty, FIFA, Minecraft and Supercell Games
-    meta nfproto ipv6 tcp sport { 3074, 3478-3480, 3075-3076, 3659, 25565, 9339 } counter ip6 dscp set $DSCP_GAMING comment "Known game ports and game consoles ports to $DSCP_GAMING_COMMENT (TCP)"
-    meta nfproto ipv6 tcp dport { 3074, 3478-3480, 3075-3076, 3659, 25565, 9339 } counter ip6 dscp set $DSCP_GAMING comment "Known game ports and game consoles ports to $DSCP_GAMING_COMMENT (TCP)"
-    meta nfproto ipv6 udp sport { 88, 3074, 3544, 3075-3079, 3658-3659, 19132-19133, 25565, 9339 } counter ip6 dscp set $DSCP_GAMING comment "Known game ports and game consoles ports to $DSCP_GAMING_COMMENT (UDP)"
-    meta nfproto ipv6 udp dport { 88, 3074, 3544, 3075-3079, 3658-3659, 19132-19133, 25565, 9339 } counter ip6 dscp set $DSCP_GAMING comment "Known game ports and game consoles ports to $DSCP_GAMING_COMMENT (UDP)"
+    # Steam, Xbox, PlayStation, Call of Duty, FIFA, Minecraft, World of Warcraft, and Supercell Games
+    meta nfproto ipv6 tcp sport { 3074, 3478-3480, 3075-3076, 3659, 3724, 25565, 9339 } counter ip6 dscp set $DSCP_GAMING comment "Known game ports and game consoles ports to $DSCP_GAMING_COMMENT (TCP)"
+    meta nfproto ipv6 tcp dport { 3074, 3478-3480, 3075-3076, 3659, 3724, 25565, 9339 } counter ip6 dscp set $DSCP_GAMING comment "Known game ports and game consoles ports to $DSCP_GAMING_COMMENT (TCP)"
+    meta nfproto ipv6 udp sport { 88, 1725, 3074, 3544, 3075-3079, 3658-3659, 3724, 19132-19133, 25565, 9339 } counter ip6 dscp set $DSCP_GAMING comment "Known game ports and game consoles ports to $DSCP_GAMING_COMMENT (UDP)"
+    meta nfproto ipv6 udp dport { 88, 1725, 3074, 3544, 3075-3079, 3658-3659, 3724, 19132-19133, 25565, 9339 } counter ip6 dscp set $DSCP_GAMING comment "Known game ports and game consoles ports to $DSCP_GAMING_COMMENT (UDP)"
 
     # NVIDIA GeForce NOW
     meta nfproto ipv6 tcp sport 49006 counter ip6 dscp set af42 comment "Known game streaming ports to AF42 (TCP)"
@@ -1054,11 +1054,11 @@ chain dscp_marking_ports_ipv6 {
     meta nfproto ipv6 udp sport { 49003-49006 } counter ip6 dscp set af42 comment "Known game streaming ports to AF42 (UDP)"
     meta nfproto ipv6 udp dport { 49003-49006 } counter ip6 dscp set af42 comment "Known game streaming ports to AF42 (UDP)"
 
-    # Zoom, Microsoft Teams, Skype, FaceTime, GoToMeeting, Webex Meeting, Jitsi Meet, Google Meet and TeamViewer
-    meta nfproto ipv6 tcp sport { 8801-8802, 5004, 5349, 5938 } counter ip6 dscp set af41 comment "Known video conferencing ports to AF41 (TCP)"
-    meta nfproto ipv6 tcp dport { 8801-8802, 5004, 5349, 5938 } counter ip6 dscp set af41 comment "Known video conferencing ports to AF41 (TCP)"
-    meta nfproto ipv6 udp sport { 3478-3497, 8801-8810, 16384-16387, 16393-16402, 1853, 8200, 9000, 10000, 19302-19309, 5938 } counter ip6 dscp set af41 comment "Known video conferencing ports to AF41 (UDP)"
-    meta nfproto ipv6 udp dport { 3478-3497, 8801-8810, 16384-16387, 16393-16402, 1853, 8200, 9000, 10000, 19302-19309, 5938 } counter ip6 dscp set af41 comment "Known video conferencing ports to AF41 (UDP)"
+    # Zoom, Microsoft Teams, Skype, FaceTime, GoToMeeting, Webex Meeting, Jitsi Meet, Google Meet, RING Live View & APP, and TeamViewer
+    meta nfproto ipv6 tcp sport { 8801-8802, 5004, 5349, 5938, 7076-7077, 9078-9079, 15063-15064 } counter ip6 dscp set af41 comment "Known video conferencing ports to AF41 (TCP)"
+    meta nfproto ipv6 tcp dport { 8801-8802, 5004, 5349, 5938, 7076-7077, 9078-9079, 15063-15064 } counter ip6 dscp set af41 comment "Known video conferencing ports to AF41 (TCP)"
+    meta nfproto ipv6 udp sport { 3478-3497, 8801-8810, 7076-7077, 9078-9079, 15063-15064, 16384-16387, 16393-16402, 1853, 8200, 9000, 10000, 19302-19309, 5938 } counter ip6 dscp set af41 comment "Known video conferencing ports to AF41 (UDP)"
+    meta nfproto ipv6 udp dport { 3478-3497, 8801-8810, 7076-7077, 9078-9079, 15063-15064, 16384-16387, 16393-16402, 1853, 8200, 9000, 10000, 19302-19309, 5938 } counter ip6 dscp set af41 comment "Known video conferencing ports to AF41 (UDP)"
 
     # Voice over Internet Protocol (VoIP) and Voice over WiFi or WiFi Calling (VoWiFi)
     meta nfproto ipv6 tcp sport { 5060-5061 } counter ip6 dscp set ef comment "Known VoIP and VoWiFi ports to EF (TCP)"
