@@ -943,7 +943,7 @@ chain dscp_marking_ports_ipv4 {
     # Live Streaming ports for YouTube Live, Twitch, Vimeo, and LinkedIn Live
     meta nfproto ipv4 tcp sport { 1935-1936, 2396, 2935 } counter ip dscp set cs3 comment "Live Streaming ports to CS3 (TCP)"
     meta nfproto ipv4 tcp dport { 1935-1936, 2396, 2935 } counter ip dscp set cs3 comment "Live Streaming ports to CS3 (TCP)"
-   
+
     # Steam, Xbox, PlayStation, Call of Duty, FIFA, Minecraft, World of Warcraft, and Supercell Games
     meta nfproto ipv4 tcp sport { 3074, 3478-3480, 3075-3076, 3659, 3724, 25565, 9339 } counter ip dscp set $DSCP_GAMING comment "Known game ports and game consoles ports to $DSCP_GAMING_COMMENT (TCP)"
     meta nfproto ipv4 tcp dport { 3074, 3478-3480, 3075-3076, 3659, 3724, 25565, 9339 } counter ip dscp set $DSCP_GAMING comment "Known game ports and game consoles ports to $DSCP_GAMING_COMMENT (TCP)"
